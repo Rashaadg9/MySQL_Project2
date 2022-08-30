@@ -82,7 +82,7 @@ SELECT EmpFname FROM EmployeeInfo WHERE EmpFname LIKE "S%";
 
 /* 9. Write a query to fetch top N records */
 
--- TODO
+SELECT * FROM EmployeeInfo LIMIT 3;
 
 /* 10. Write a query to retrieve the EmpFname and EmpLname in a single column as “FullName”. The
 first name and the last name must be separated with space. */
@@ -126,3 +126,34 @@ SELECT EmployeeInfo.EmpID, EmployeeInfo.EmpFname, EmployeeInfo.EmpLname, Employe
  FROM EmployeeInfo
  INNER JOIN EmployeePosition ON EmployeeInfo.EmpID=EmployeePosition.EmpID
  WHERE EmployeePosition.EmpPosition = "Manager";
+ 
+ /* 17. Write a query to fetch the department-wise count of employees sorted by department’s count in ascending order. */
+ 
+ SELECT DISTINCT Department, COUNT(*) AS NumberOfEmployees FROM EmployeeInfo GROUP BY Department ORDER BY NumberOfEmployees ASC;
+
+/* 18. Write a query to calculate the even and odd records from a table. */
+
+SELECT
+(SELECT COUNT(*) FROM EmployeeInfo WHERE (EmpID % 2 = 0)
+)AS Even,
+(SELECT COUNT(*) AS ODD FROM EmployeeInfo WHERE NOT (EmpID % 2 = 0)
+)AS ODD;
+
+/* 19. Write a SQL query to retrieve employee details from EmployeeInfo table who have a date of
+joining in the EmployeePosition table. */
+
+SELECT DISTINCT EmployeeInfo.EmpID, EmployeeInfo.EmpFname, EmployeeInfo.EmpLname, 
+EmployeeInfo.Department, EmployeeInfo.Project, EmployeeInfo.Address, EmployeeInfo.DOB, EmployeeInfo.Gender 
+FROM EmployeeInfo JOIN EmployeePosition ON EmployeeInfo.EmpID=EmployeePosition.EmpID WHERE EmployeePosition.DateOfJoining;
+
+-- INSERT INTO EmployeePosition VALUES(5, "Executive2", "1999-01-01", 70000);
+
+/* 20. Write a query to retrieve two minimum and maximum salaries from the EmployeePosition table. */
+
+SELECT MAX(Salary) AS MAX, MIN(Salary) AS MIN FROM EmployeePosition;
+
+/* 21. Write a query to find the Nth highest salary from the table without using TOP/limit keyword. */
+
+SELECT * FROM EmployeePosition e1 WHERE(2) = (SELECT COUNT(Salary) FROM EmployeePosition e2 WHERE e1.Salary <= e2.Salary);
+
+/* 22. Write a query to retrieve duplicate records from a table. */
