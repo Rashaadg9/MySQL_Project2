@@ -157,3 +157,59 @@ SELECT MAX(Salary) AS MAX, MIN(Salary) AS MIN FROM EmployeePosition;
 SELECT * FROM EmployeePosition e1 WHERE(2) = (SELECT COUNT(Salary) FROM EmployeePosition e2 WHERE e1.Salary <= e2.Salary);
 
 /* 22. Write a query to retrieve duplicate records from a table. */
+
+SELECT * FROM EmployeePosition GROUP BY EmpID HAVING COUNT(*) > 1;
+
+/* 23. Write a query to retrieve the list of employees working in the same department. */
+
+SELECT * FROM EmployeeInfo WHERE Department = "HR";
+-- SELECT * FROM employeeinfo WHERE Department = (SELECT Department FROM employeeinfo WHERE EmpID = 3);
+
+/* 24. Write a query to retrieve the last 3 records from the EmployeeInfo table. */
+
+SELECT * FROM EmployeeInfo ORDER BY EmpID DESC LIMIT 3;
+
+/* 25. Write a query to find the third-highest salary from the EmpPosition table. */
+
+SELECT * FROM EmployeePosition ORDER BY Salary DESC LIMIT 2, 1;
+
+/* 26. Write a query to display the first and the last record from the EmployeeInfo table. */
+
+(SELECT * FROM EmployeeInfo ORDER BY EmpId ASC LIMIT 1 )
+UNION	
+(SELECT * FROM EmployeeInfo ORDER BY EmpId DESC LIMIT 1 );
+
+/* 27. Write a query to add email validation to your database */
+
+DROP TABLE IF EXISTS EmailTest;
+CREATE TABLE EmailTest ( EmpID INT PRIMARY KEY, Email varchar(255) NOT NULL );
+
+DELIMITER //
+CREATE TRIGGER EmailValidation BEFORE INSERT ON EmailTest FOR EACH ROW
+BEGIN
+IF (NEW.email REGEXP "^.+@.+\.com$") = 0 
+THEN SIGNAL SQLSTATE "12345" SET MESSAGE_TEXT = "ERROR";
+END IF;
+END //
+DELIMITER ;
+
+INSERT INTO EmailTest VALUES (1, "QWERRTY@GMAIL.com");
+INSERT INTO EmailTest VALUES (2, "qw@GMAIL.cOm");
+INSERT INTO EmailTest VALUES (3, "12345@cognixia.cOm");
+-- INSERT INTO EmailTest VALUES (4, "@cognixia.com");
+
+DROP TABLE EmailTest;
+
+/* 28. Write a query to retrieve Departments who have less than 2 employees working in it. */
+
+SELECT Department, COUNT(*) AS NumberOfEmployees FROM Employeeinfo GROUP BY Department HAVING COUNT(*) < 2;
+
+/* 29. Write a query to retrieve EmpPostion along with total salaries paid for each of them. */
+
+SELECT EmpPosition, SUM(Salary) AS Total_Palaries_Paid FROM Employeeposition GROUP BY EmpPosition ORDER BY Total_Palaries_Paid DESC;
+
+/* 30. Write a query to fetch 50% records from the EmployeeInfo table. */
+
+SET @num = ( SELECT CEILING(COUNT(*)/2) FROM EmployeeInfo);
+PREPARE STMT FROM  "SELECT * FROM EmployeeInfo LIMIT ?";
+EXECUTE STMT USING @num;
