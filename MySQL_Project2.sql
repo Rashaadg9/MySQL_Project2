@@ -211,5 +211,6 @@ SELECT EmpPosition, SUM(Salary) AS Total_Palaries_Paid FROM Employeeposition GRO
 /* 30. Write a query to fetch 50% records from the EmployeeInfo table. */
 
 SET @num = ( SELECT CEILING(COUNT(*)/2) FROM EmployeeInfo);
-PREPARE STMT FROM  "SELECT * FROM EmployeeInfo LIMIT ?";
-EXECUTE STMT USING @num;
+SET @sql = CONCAT("SELECT * FROM EmployeeInfo LIMIT ", @num);
+PREPARE STMT FROM  @sql;
+EXECUTE STMT;
